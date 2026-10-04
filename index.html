@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Google Fonts: Playful Kid Fonts -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
 
   <script>
@@ -86,8 +86,9 @@
 
 <body class="bg-gradient-to-b from-sky-200 via-indigo-100 to-amber-100 min-h-screen flex flex-col justify-between text-slate-800 antialiased overflow-x-hidden">
 
+  <!-- HEADER NAVIGATION BAR -->
   <header class="w-full max-w-5xl mx-auto p-3 sm:p-4 flex justify-between items-center z-10">
-    <!-- App Brand -->
+    <!-- Brand Title -->
     <div class="flex items-center gap-3">
       <div class="w-12 h-12 sm:w-14 sm:h-14 bg-amber-400 rounded-2xl flex items-center justify-center text-indigo-900 text-2xl font-bold shadow-lg border-2 border-white animate-bounceSlow">
         👑
@@ -97,27 +98,33 @@
           <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950 leading-none">Matte-Äventyret</h1>
           <span class="bg-blue-600 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Lgr22</span>
         </div>
-        <p class="text-xs sm:text-sm font-semibold text-indigo-700">Matematik Årskurs 1 • Sweden</p>
+        <p class="text-xs sm:text-sm font-semibold text-indigo-700">Matematik Årskurs 1 • Premium Edition</p>
       </div>
     </div>
 
-    <!-- Header Actions -->
+    <!-- Header Control Buttons -->
     <div class="flex items-center gap-2 sm:gap-3">
-      <!-- Voice Audio Speech Switch -->
-      <button id="speechToggleBtn" onclick="toggleSpeech()" class="bg-white/90 hover:bg-white text-indigo-800 p-2.5 sm:p-3 rounded-2xl shadow border-2 border-white text-lg transition flex items-center gap-1.5" title="Svenskt Tal">
-        <i id="speechIcon" class="fa-solid fa-volume-high text-green-600"></i>
-        <span class="text-xs font-bold hidden sm:inline text-indigo-900">Svenskt Tal</span>
+      <!-- Fullscreen Button -->
+      <button onclick="toggleFullscreen()" class="bg-white/90 hover:bg-white text-indigo-900 p-2.5 sm:p-3 rounded-2xl shadow border-2 border-white text-lg transition flex items-center justify-center" title="Helskärm / Fullscreen">
+        <i id="fullscreenIcon" class="fa-solid fa-expand"></i>
       </button>
 
-      <!-- Parent & Lgr22 Curriculum Guide Button -->
+      <!-- Audio & Settings Button -->
+      <button onclick="openSettingsModal()" class="bg-white/90 hover:bg-white text-indigo-900 p-2.5 sm:p-3 rounded-2xl shadow border-2 border-white text-lg transition flex items-center gap-1.5" title="Inställningar / Audio Settings">
+        <i class="fa-solid fa-sliders text-indigo-600"></i>
+        <span class="text-xs font-bold hidden sm:inline">Ljud & Röst</span>
+      </button>
+
+      <!-- Curriculum Guide Button -->
       <button onclick="openCurriculumModal()" class="bg-yellow-400 hover:bg-yellow-300 text-amber-950 font-bold px-3.5 py-2.5 rounded-2xl shadow-md border-2 border-white flex items-center gap-2 transition text-xs sm:text-sm">
         <i class="fa-solid fa-book-open text-amber-800 text-base"></i>
-        <span class="hidden sm:inline">Lgr22 Föräldraguide</span>
+        <span class="hidden sm:inline">Lgr22 & GitHub Guide</span>
         <span class="sm:hidden">Guide</span>
       </button>
     </div>
   </header>
 
+  <!-- MAIN PLAY AREA -->
   <main class="w-full max-w-5xl mx-auto px-3 sm:px-4 py-2 flex-grow flex flex-col items-center justify-center gap-4">
 
     <!-- Swedish Math Modules Selector -->
@@ -140,14 +147,33 @@
       </button>
     </div>
 
+    <!-- LEVEL JUMP & SKIP BAR -->
+    <div class="w-full max-w-3xl bg-white/80 backdrop-blur-md px-3 py-2 rounded-2xl shadow-sm border border-white flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-1.5 overflow-x-auto py-1">
+        <span class="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1">
+          <i class="fa-solid fa-layer-group text-indigo-500"></i> Nivå / Level:
+        </span>
+        <!-- Level Jump Pill Buttons 1 to 10 -->
+        <div id="levelPillContainer" class="flex items-center gap-1">
+          <!-- Dynamically generated via JS -->
+        </div>
+      </div>
+
+      <!-- Skip Question Button -->
+      <button onclick="skipQuestion()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-1.5 rounded-xl border border-amber-300 text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+        <span>Hoppa över</span>
+        <i class="fa-solid fa-forward text-amber-700"></i>
+      </button>
+    </div>
+
     <!-- Progress & Reward Banner -->
-    <div class="w-full max-w-3xl bg-white/85 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-sm border border-white flex justify-between items-center">
+    <div class="w-full max-w-3xl bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-sm border border-white flex justify-between items-center">
       <div class="flex items-center gap-2 sm:gap-3">
         <span class="text-xs sm:text-sm font-bold text-slate-600">Framsteg / Progress:</span>
         <div class="w-28 sm:w-44 bg-slate-200 h-3.5 rounded-full overflow-hidden border border-slate-300">
           <div id="progressBar" class="bg-gradient-to-r from-emerald-400 to-green-500 h-full w-0 transition-all duration-500"></div>
         </div>
-        <span id="progressText" class="text-xs font-bold text-slate-600">0/5</span>
+        <span id="progressText" class="text-xs font-bold text-slate-600">1/10</span>
       </div>
 
       <div class="flex items-center gap-3">
@@ -162,9 +188,10 @@
       </div>
     </div>
 
-    <div class="w-full max-w-3xl bg-white/95 backdrop-blur-md rounded-3xl p-4 sm:p-8 shadow-xl border-4 border-white flex flex-col items-center gap-6 relative overflow-hidden min-h-[380px] justify-between">
+    <!-- MAIN INTERACTIVE QUESTION CONTAINER -->
+    <div class="w-full max-w-3xl bg-white/95 backdrop-blur-md rounded-3xl p-4 sm:p-8 shadow-xl border-4 border-white flex flex-col items-center gap-5 relative overflow-hidden min-h-[380px] justify-between">
       
-      <!-- Module Question Title & Visual Toggle -->
+      <!-- Module Subtitle Header & Visual Helper Switch -->
       <div class="w-full flex justify-between items-center border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2">
           <span id="themeEmoji" class="text-2xl">🍓</span>
@@ -178,19 +205,19 @@
         </button>
       </div>
 
-      <!-- Swedish Question Prompt -->
+      <!-- Swedish Question Text -->
       <div class="text-center px-2">
         <h2 id="questionPrompt" class="text-xl sm:text-2xl font-extrabold text-indigo-950 leading-snug">
           Laddar fråga...
         </h2>
         <p id="questionSubtext" class="text-xs sm:text-sm font-semibold text-slate-500 mt-0.5">
-          Choose the correct answer below
+          Välj rätt svar nedan / Select answer below
         </p>
       </div>
 
-      <!-- Main Interactive Display Container -->
+      <!-- Main Dynamic Canvas Element Area -->
       <div id="interactiveDisplay" class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 my-auto py-2 w-full min-h-[120px]">
-        <!-- Dynamic Canvas Content injected via JS -->
+        <!-- Dynamic visuals injected via JavaScript -->
       </div>
 
       <!-- Feedback Banner -->
@@ -198,11 +225,11 @@
         <span id="feedbackText" class="px-4 py-1 rounded-full">Bra jobbat!</span>
       </div>
 
-      <!-- Answer Input Buttons / Keypad -->
+      <!-- Answer Input Buttons -->
       <div class="w-full flex flex-col items-center gap-2">
         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Välj rätt svar / Select answer:</p>
         <div id="answerOptions" class="flex flex-wrap justify-center gap-2 sm:gap-3 w-full max-w-lg">
-          <!-- Dynamic Buttons -->
+          <!-- Keypad buttons injected via JS -->
         </div>
       </div>
 
@@ -210,6 +237,105 @@
 
   </main>
 
+  <!-- SETTINGS & AUDIO MODAL -->
+  <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full flex flex-col shadow-2xl border-4 border-indigo-500 overflow-hidden transform transition-all scale-95 opacity-0" id="settingsModalCard">
+      
+      <!-- Modal Header -->
+      <div class="bg-indigo-600 p-5 text-white flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-extrabold">Ljud & Röstinställningar</h2>
+            <p class="text-xs text-indigo-200">Audio, Female Swedish Voice & Sound FX</p>
+          </div>
+        </div>
+        <button onclick="closeSettingsModal()" class="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Settings Form Body -->
+      <div class="p-6 space-y-5 text-slate-700 text-sm">
+        
+        <!-- Mute All Master Switch -->
+        <div class="flex items-center justify-between p-3 bg-slate-100 rounded-2xl">
+          <div class="flex items-center gap-2.5">
+            <i class="fa-solid fa-volume-xmark text-lg text-slate-600"></i>
+            <div>
+              <p class="font-extrabold text-slate-800">Tyst läge / Mute All</p>
+              <p class="text-xs text-slate-500">Stäng av allt ljud helt</p>
+            </div>
+          </div>
+          <input type="checkbox" id="muteAllToggle" onchange="toggleMuteAll()" class="w-6 h-6 text-indigo-600 rounded-lg cursor-pointer">
+        </div>
+
+        <!-- Swedish Female Voice Selector -->
+        <div class="space-y-2">
+          <label class="font-extrabold text-indigo-950 flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-user-nurse text-pink-500"></i>
+              Svensk Kvinnlig Röst / Swedish Female Voice
+            </span>
+            <button onclick="testVoiceSpeech()" class="text-xs font-bold text-indigo-600 hover:underline flex items-center gap-1">
+              <i class="fa-solid fa-play"></i> Prova röst
+            </button>
+          </label>
+          <select id="voiceSelect" onchange="onVoiceSelected()" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-2.5 font-semibold text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">Söker efter svenska röster...</option>
+          </select>
+          <p class="text-[11px] text-slate-500">
+            Systemet väljer automatiskt den mest naturliga svenska kvinnliga rösten (t.ex. Klara, Alva, Google sv-SE, Siri).
+          </p>
+        </div>
+
+        <!-- Ambient Background Music Control -->
+        <div class="space-y-2 p-3 bg-indigo-50 border border-indigo-100 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-music text-indigo-600"></i>
+              <span class="font-extrabold text-indigo-950">Lugn Bakgrundsmusik</span>
+            </div>
+            <input type="checkbox" id="bgMusicToggle" onchange="toggleBgMusic()" class="w-5 h-5 text-indigo-600 rounded cursor-pointer">
+          </div>
+          <div class="flex items-center gap-3 pt-1">
+            <span class="text-xs text-slate-500 font-bold">Volym:</span>
+            <input type="range" id="musicVolSlider" min="0" max="1" step="0.05" value="0.2" oninput="updateMusicVolume(this.value)" class="w-full accent-indigo-600 cursor-pointer">
+          </div>
+        </div>
+
+        <!-- Sound FX Volume Control -->
+        <div class="space-y-1">
+          <div class="flex justify-between font-bold text-xs">
+            <span>Ljudeffekter (Chimes & Fanfar)</span>
+            <span id="sfxVolLabel">70%</span>
+          </div>
+          <input type="range" id="sfxVolSlider" min="0" max="1" step="0.05" value="0.7" oninput="updateSfxVolume(this.value)" class="w-full accent-indigo-600 cursor-pointer">
+        </div>
+
+        <!-- Fullscreen Option Button in Settings -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center">
+          <span class="font-bold text-xs text-slate-600">Skärmläge / Display Mode:</span>
+          <button onclick="toggleFullscreen()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-bold text-xs flex items-center gap-2 transition">
+            <i class="fa-solid fa-expand"></i> Växla Helskärm
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-slate-50 p-4 border-t border-slate-200 flex justify-end">
+        <button onclick="closeSettingsModal()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition">
+          Spara & Stäng / Save & Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CURRICULUM & GITHUB FIX GUIDE MODAL -->
   <div id="curriculumModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border-4 border-yellow-400 overflow-hidden transform transition-all scale-95 opacity-0" id="curriculumModalCard">
       
@@ -220,7 +346,7 @@
             👑
           </div>
           <div>
-            <h2 class="text-xl sm:text-2xl font-extrabold">Skolverket Lgr22 Matematik (Åk 1)</h2>
+            <h2 class="text-xl sm:text-2xl font-extrabold">Skolverket Lgr22 & GitHub Actions Guide</h2>
             <p class="text-xs text-blue-200">Svenska läroplanen för grundskolan • Grade 1 Primary Math Guide</p>
           </div>
         </div>
@@ -230,15 +356,34 @@
       </div>
 
       <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto space-y-6 text-slate-700 font-sans text-sm sm:text-base">
+      <div class="p-6 overflow-y-auto space-y-6 text-slate-700 text-sm sm:text-base">
         
+        <!-- GITHUB ACTIONS NODE DEPRECATION FIX SECTION -->
+        <div class="bg-amber-50 rounded-2xl p-4 border-2 border-amber-300 space-y-2">
+          <h3 class="font-extrabold text-amber-950 text-base flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg"></i>
+            Fix: "Node.js 20 is deprecated" Error in GitHub Actions
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+            If your GitHub Pages or automated build pipeline displays a warning or error regarding Node.js 20 deprecation, update your workflow YAML file inside <code class="bg-amber-200/60 px-1.5 py-0.5 rounded font-mono text-xs">.github/workflows/deploy.yml</code> to use the updated <code class="bg-amber-200/60 px-1.5 py-0.5 rounded font-mono text-xs">v4</code> actions:
+          </p>
+          
+          <div class="bg-slate-900 text-slate-100 p-3 rounded-xl font-mono text-xs overflow-x-auto space-y-1">
+            <p class="text-slate-400"># Update your GitHub Actions steps to v4:</p>
+            <p><span class="text-emerald-400">- uses:</span> actions/checkout@v4</p>
+            <p><span class="text-emerald-400">- uses:</span> actions/setup-node@v4</p>
+            <p class="text-amber-300 pl-4">with:</p>
+            <p class="text-amber-300 pl-8">node-version: <span class="text-sky-300">'22'</span>  <span class="text-slate-400"># Upgrade from 20 to Node 22 LTS</span></p>
+          </div>
+        </div>
+
         <!-- Lgr22 Module Breakdown -->
         <div class="bg-blue-50 rounded-2xl p-4 border border-blue-200 space-y-3">
           <h3 class="font-extrabold text-indigo-900 text-base sm:text-lg flex items-center gap-2">
-            <i class="fa-solid fa-graduation-cap text-blue-600"></i> Centralt Innehåll (Årskurs 1-3)
+            <i class="fa-solid fa-graduation-cap text-blue-600"></i> Centralt Innehåll Lgr22 (Årskurs 1)
           </h3>
           <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            In Swedish primary schools (Lgr22), Grade 1 math focuses on intuitive visual understanding, concrete representations, and pattern recognition before abstract formal calculations.
+            In Swedish primary schools (Lgr22), Grade 1 math focuses on intuitive visual understanding, concrete representations, equal sign balance, and pattern recognition.
           </p>
         </div>
 
@@ -250,7 +395,7 @@
               <span>🔢 1. Taluppfattning (0-20)</span>
             </h4>
             <p class="text-xs text-slate-600 leading-normal">
-              Naturliga tal och deras egenskap. Att dela upp tal i delar (Part-Part-Whole), storleksjämförelse ($>$, $<$, $=$), och talens ordning på tallinjen.
+              Naturliga tal och deras egenskap. Att dela upp tal i delar (Part-Part-Whole), storleksjämförelse ($>$, $<$, $=$), och talens ordning.
             </p>
           </div>
 
@@ -259,7 +404,7 @@
               <span>⚖️ 2. Likhetstecknet & Obekanta Tal</span>
             </h4>
             <p class="text-xs text-slate-600 leading-normal">
-              Likhetstecknets betydelse (vågskålsprincipen: att det ska vara lika mycket på båda sidor, t.ex. $1 + 3 + ? = 6$). Enkla matematiska likheter.
+              Likhetstecknets betydelse (vågskålsprincipen: att det ska vara lika mycket på båda sidor, t.ex. $1 + 3 + ? = 6$).
             </p>
           </div>
 
@@ -268,7 +413,7 @@
               <span>📐 3. Geometri & Mönster</span>
             </h4>
             <p class="text-xs text-slate-600 leading-normal">
-              Grundläggande tvådimensionella former: <em>Cirkel, Kvadrat, Rektangel, Triangel</em>. Att känna igen, beskriva och fortsätta regelbundna mönster.
+              Grundläggande tvådimensionella former: <em>Cirkel, Kvadrat, Rektangel, Triangel</em> och regelbundna mönster.
             </p>
           </div>
 
@@ -277,19 +422,19 @@
               <span>🍒 4. Udda/Jämna & Dubbelt/Hälften</span>
             </h4>
             <p class="text-xs text-slate-600 leading-normal">
-              Att paruppdela tal för att se om de är udda eller jämna. Förståelse för begreppen <strong>dubbelt</strong> (t.ex. $3 + 3$) och <strong>hälften</strong>.
+              Paruppdelning av tal för att se om de är udda/jämna, samt förståelse för <strong>dubbelt</strong> och <strong>hälften</strong>.
             </p>
           </div>
 
         </div>
 
-        <!-- Parent Tips section for Swedish Math -->
-        <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 space-y-2">
-          <h4 class="font-extrabold text-amber-900 text-sm sm:text-base flex items-center gap-2">
-            <i class="fa-solid fa-lightbulb text-amber-600"></i> Pedagogen Tipsar: Så hjälper du barnet hemma
+        <!-- Pedagogen Tipsar -->
+        <div class="bg-indigo-50 rounded-2xl p-4 border border-indigo-200 space-y-2">
+          <h4 class="font-extrabold text-indigo-900 text-sm sm:text-base flex items-center gap-2">
+            <i class="fa-solid fa-lightbulb text-amber-500"></i> Pedagogen Tipsar: Så hjälper du barnet hemma
           </h4>
           <ul class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1">
-            <li><strong>Använd plockmaterial:</strong> Använd kottar, legobitar, blåbär eller makaroner för att visa matematiska problem i vardagen.</li>
+            <li><strong>Använd plockmaterial:</strong> Legobitar, blåbär eller makaroner för att visa matematiska problem i vardagen.</li>
             <li><strong>Tala om likhetstecknet som en gungbräda:</strong> Förklara att $=$ inte betyder "här kommer svaret", utan "det väger lika på båda sidor".</li>
             <li><strong>Räkna parvis:</strong> När ni sätter på er strumpor eller skor, räkna $2, 4, 6, 8$ för att träna jämna tal och dubbelt!</li>
           </ul>
@@ -299,7 +444,7 @@
 
       <!-- Modal Footer -->
       <div class="bg-slate-50 p-4 border-t border-slate-200 flex justify-end">
-        <button onclick="closeCurriculumModal()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition">
+        <button onclick="closeCurriculumModal()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition text-xs sm:text-sm">
           Stäng & Spela! / Close & Play!
         </button>
       </div>
@@ -307,91 +452,27 @@
     </div>
   </div>
 
+  <!-- JAVASCRIPT APP LOGIC -->
   <script>
-    // Audio State & Speech Synthesis (Svenskt Tal)
-    let speechEnabled = true;
+    let isMuted = false;
+    let sfxVolume = 0.7;
+    let musicVolume = 0.2;
+    let bgMusicPlaying = false;
+
+    // Speech synthesis & Voice Scanner
     let synth = window.speechSynthesis || null;
+    let availableVoices = [];
+    let selectedVoice = null;
 
-    function toggleSpeech() {
-      speechEnabled = !speechEnabled;
-      const speechIcon = document.getElementById('speechIcon');
-      if (speechEnabled) {
-        speechIcon.className = 'fa-solid fa-volume-high text-green-600';
-        speakSwedishText('Svenskt tal aktiverat');
-      } else {
-        speechIcon.className = 'fa-solid fa-volume-xmark text-slate-400';
-        if (synth) synth.cancel();
-      }
-    }
-
-    // Speak text using Swedish voice if available
-    function speakSwedishText(text) {
-      if (!speechEnabled || !synth) return;
-      
-      synth.cancel(); // Stop ongoing speech
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'sv-SE';
-      utterance.rate = 0.88; // Slower pace for young kids
-      utterance.pitch = 1.05;
-
-      // Try finding Swedish voice
-      const voices = synth.getVoices();
-      const svVoice = voices.find(v => v.lang.includes('sv') || v.lang.includes('SE'));
-      if (svVoice) {
-        utterance.voice = svVoice;
-      }
-
-      synth.speak(utterance);
-    }
-
-    // Audio Synthesizer for chimes
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function playChime(isCorrect) {
-      if (!speechEnabled) return;
-      try {
-        if (!audioCtx) audioCtx = new AudioContext();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        const now = audioCtx.currentTime;
-        if (isCorrect) {
-          const notes = [293.66, 369.99, 440.00, 587.33]; // D4, F#4, A4, D5
-          notes.forEach((f, i) => {
-            const osc = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            osc.frequency.setValueAtTime(f, now + i * 0.07);
-            g.gain.setValueAtTime(0.2, now + i * 0.07);
-            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.25);
-            osc.connect(g);
-            g.connect(audioCtx.destination);
-            osc.start(now + i * 0.07);
-            osc.stop(now + i * 0.07 + 0.25);
-          });
-        } else {
-          const osc = audioCtx.createOscillator();
-          const g = audioCtx.createGain();
-          osc.frequency.setValueAtTime(220, now);
-          osc.frequency.exponentialRampToValueAtTime(140, now + 0.2);
-          g.gain.setValueAtTime(0.2, now);
-          g.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-          osc.connect(g);
-          g.connect(audioCtx.destination);
-          osc.start(now);
-          osc.stop(now + 0.2);
-        }
-      } catch(e){}
-    }
-
-    // Application State Variables
+    // Game state variables
     let currentModule = 1;
+    let currentLevel = 1;
+    const maxLevels = 10;
     let score = 0;
-    let progress = 0;
-    const maxProgress = 5;
     let showCounters = true;
     let currentQuestionData = null;
 
-    // Swedish Swedish Themes (berries, mushrooms, stars, apples)
+    // Swedish counter themes
     const swedishCounters = [
       { name: 'Jordgubbar', icon: '🍓' },
       { name: 'Blåbär', icon: '🫐' },
@@ -402,13 +483,254 @@
     ];
     let currentTheme = swedishCounters[0];
 
-    // Module Selection Handler
+    function initVoices() {
+      if (!synth) return;
+      
+      const loadVoices = () => {
+        availableVoices = synth.getVoices();
+        const voiceSelect = document.getElementById('voiceSelect');
+        if (!voiceSelect) return;
+        
+        voiceSelect.innerHTML = '';
+
+        // Filter for Swedish voices
+        const svVoices = availableVoices.filter(v => v.lang.includes('sv') || v.lang.includes('SE'));
+
+        if (svVoices.length === 0) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'Standard Svensk Systemröst';
+          voiceSelect.appendChild(opt);
+          selectedVoice = null;
+          return;
+        }
+
+        // Priority order for natural female sounding voices
+        const preferredFemaleNames = ['klara', 'alva', 'astrid', 'google svenska', 'siri', 'female'];
+        let matchedFemaleVoice = null;
+
+        svVoices.forEach(voice => {
+          const opt = document.createElement('option');
+          opt.value = voice.name;
+          opt.textContent = `${voice.name} (${voice.lang})`;
+          voiceSelect.appendChild(opt);
+
+          const lowerName = voice.name.toLowerCase();
+          if (!matchedFemaleVoice && preferredFemaleNames.some(p => lowerName.includes(p))) {
+            matchedFemaleVoice = voice;
+          }
+        });
+
+        // Default to matched female or first Swedish voice
+        selectedVoice = matchedFemaleVoice || svVoices[0];
+        voiceSelect.value = selectedVoice.name;
+      };
+
+      loadVoices();
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+      }
+    }
+
+    function onVoiceSelected() {
+      const select = document.getElementById('voiceSelect');
+      const chosenName = select.value;
+      selectedVoice = availableVoices.find(v => v.name === chosenName) || null;
+    }
+
+    function speakSwedishText(text) {
+      if (isMuted || !synth) return;
+
+      synth.cancel(); // Interrupt existing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'sv-SE';
+      utterance.rate = 0.90;  // Gentle, friendly pace for 6-year-olds
+      utterance.pitch = 1.15; // Natural warm female pitch enhancement
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      } else {
+        const svFallback = synth.getVoices().find(v => v.lang.includes('sv'));
+        if (svFallback) utterance.voice = svFallback;
+      }
+
+      synth.speak(utterance);
+    }
+
+    function testVoiceSpeech() {
+      speakSwedishText('Hej! Jag är din svensktalande mattekompis. Bra jobbat!');
+    }
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    let bgMusicTimer = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playChime(isCorrect) {
+      if (isMuted) return;
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+
+        if (isCorrect) {
+          const notes = [293.66, 369.99, 440.00, 587.33]; // D4, F#4, A4, D5 pentatonic chime
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.25 * sfxVolume, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.3);
+          });
+        } else {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(140, now + 0.25);
+          gain.gain.setValueAtTime(0.2 * sfxVolume, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        }
+      } catch (e) {}
+    }
+
+    // Procedural Ambient Music Generator using Web Audio API
+    function toggleBgMusic() {
+      const toggle = document.getElementById('bgMusicToggle');
+      bgMusicPlaying = toggle.checked;
+
+      if (bgMusicPlaying) {
+        startAmbientMusic();
+      } else {
+        stopAmbientMusic();
+      }
+    }
+
+    function startAmbientMusic() {
+      if (bgMusicTimer) clearInterval(bgMusicTimer);
+
+      const playAmbientChord = () => {
+        if (!bgMusicPlaying || isMuted) return;
+        try {
+          const ctx = getAudioCtx();
+          const now = ctx.currentTime;
+          // Soft ambient pentatonic frequencies
+          const chordNotes = [220.00, 277.18, 329.63, 440.00]; // A major pad
+          const root = chordNotes[Math.floor(Math.random() * chordNotes.length)];
+
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(root, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.04 * musicVolume, now + 1.5);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 4.0);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 4.0);
+        } catch(e){}
+      };
+
+      playAmbientChord();
+      bgMusicTimer = setInterval(playAmbientChord, 3500);
+    }
+
+    function stopAmbientMusic() {
+      if (bgMusicTimer) {
+        clearInterval(bgMusicTimer);
+        bgMusicTimer = null;
+      }
+    }
+
+    function toggleMuteAll() {
+      isMuted = document.getElementById('muteAllToggle').checked;
+      if (isMuted && synth) {
+        synth.cancel();
+      }
+    }
+
+    function updateMusicVolume(val) {
+      musicVolume = parseFloat(val);
+    }
+
+    function updateSfxVolume(val) {
+      sfxVolume = parseFloat(val);
+      document.getElementById('sfxVolLabel').textContent = `${Math.round(sfxVolume * 100)}%`;
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        document.getElementById('fullscreenIcon').className = 'fa-solid fa-compress';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+          document.getElementById('fullscreenIcon').className = 'fa-solid fa-expand';
+        }
+      }
+    }
+
+    function renderLevelPills() {
+      const container = document.getElementById('levelPillContainer');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= maxLevels; i++) {
+        const btn = document.createElement('button');
+        const isActive = i === currentLevel;
+        btn.className = `w-7 h-7 sm:w-8 sm:h-8 rounded-xl font-bold text-xs transition-all flex items-center justify-center ${
+          isActive 
+            ? 'bg-indigo-600 text-white shadow-md scale-110 border-2 border-white' 
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-300'
+        }`;
+        btn.textContent = i;
+        btn.onclick = () => jumpToLevel(i);
+        container.appendChild(btn);
+      }
+    }
+
+    function jumpToLevel(lvl) {
+      currentLevel = lvl;
+      updateProgressUI();
+      generateQuestion();
+    }
+
+    function skipQuestion() {
+      speakSwedishText('Hoppar över till nästa fråga!');
+      if (currentLevel < maxLevels) {
+        currentLevel += 1;
+      } else {
+        currentLevel = 1;
+      }
+      updateProgressUI();
+      generateQuestion();
+    }
+
     function selectModule(modNum) {
       currentModule = modNum;
-      progress = 0;
+      currentLevel = 1;
       updateProgressUI();
 
-      // Style active module tabs
+      // Style active module buttons
       [1, 2, 3, 4].forEach(m => {
         const btn = document.getElementById(`mod${m}Btn`);
         const sub = btn.querySelector('span:last-child');
@@ -443,35 +765,33 @@
       readQuestionAudio();
     }
 
-    // Read question out loud in Swedish
     function readQuestionAudio() {
       if (currentQuestionData && currentQuestionData.speechPrompt) {
         speakSwedishText(currentQuestionData.speechPrompt);
       }
     }
 
-    // MODULE 1: Taluppfattning (Number Sense 0-20, counting, comparing)
+    // MODULE 1: Taluppfattning
     function generateModule1_Taluppfattning() {
       document.getElementById('moduleSubtitle').textContent = 'Modul 1: Taluppfattning (0-20)';
       
-      const subType = Math.random() > 0.5 ? 'count' : 'compare';
+      const subType = currentLevel % 2 !== 0 ? 'count' : 'compare';
 
       if (subType === 'count') {
-        const num = Math.floor(Math.random() * 15) + 3; // 3 to 18
+        const countVal = Math.min(20, Math.floor(Math.random() * (currentLevel + 4)) + 2);
         currentQuestionData = {
           type: 'count',
           prompt: `Hur många ${currentTheme.name.toLowerCase()} ser du?`,
           speechPrompt: `Hur många ${currentTheme.name.toLowerCase()} ser du?`,
-          targetVal: num,
-          correctAnswer: num,
-          options: generateOptions(num, 1, 20)
+          targetVal: countVal,
+          correctAnswer: countVal,
+          options: generateOptions(countVal, 1, 20)
         };
       } else {
-        // Compare numbers (Vilket tal är störst / minst?)
         const isBiggest = Math.random() > 0.5;
-        const n1 = Math.floor(Math.random() * 18) + 1;
-        let n2 = Math.floor(Math.random() * 18) + 1;
-        while (n1 === n2) n2 = Math.floor(Math.random() * 18) + 1;
+        const n1 = Math.floor(Math.random() * (currentLevel + 8)) + 1;
+        let n2 = Math.floor(Math.random() * (currentLevel + 8)) + 1;
+        while (n1 === n2) n2 = Math.floor(Math.random() * (currentLevel + 8)) + 1;
 
         const correct = isBiggest ? Math.max(n1, n2) : Math.min(n1, n2);
         const word = isBiggest ? 'störst' : 'minst';
@@ -488,12 +808,12 @@
       }
     }
 
-    // MODULE 2: Likhetstecknets Betydelse & Obekanta Tal (e.g. 1 + 3 + ? = 6)
+    // MODULE 2: Likhetstecknets Betydelse & Obekanta Tal
     function generateModule2_Likhetstecknet() {
       document.getElementById('moduleSubtitle').textContent = 'Modul 2: Likhetstecknet & Obekanta Tal';
 
-      const sumTarget = Math.floor(Math.random() * 8) + 5; // Target 5 to 12
-      const partsCount = Math.random() > 0.4 ? 3 : 2;
+      const sumTarget = Math.min(15, Math.floor(Math.random() * (currentLevel + 3)) + 4);
+      const partsCount = currentLevel > 5 ? 3 : 2;
 
       let parts = [];
       let rem = sumTarget;
@@ -520,11 +840,11 @@
       };
     }
 
-    // MODULE 3: Geometri & Mönster (2D Shapes & Pattern Completion)
+    // MODULE 3: Geometri & Mönster
     function generateModule3_Geometri() {
       document.getElementById('moduleSubtitle').textContent = 'Modul 3: Geometri & Mönster';
 
-      const isShape = Math.random() > 0.5;
+      const isShape = currentLevel % 2 !== 0;
 
       if (isShape) {
         const shapes = [
@@ -544,7 +864,6 @@
           options: shuffleArray(shapes.map(s => s.name))
         };
       } else {
-        // Pattern completion (A-B-A-B or A-B-C-A-B-C)
         const patternTypes = [
           ['🔴', '🟦', '🔴', '🟦', '?'],
           ['⭐', '🌙', '⭐', '🌙', '?'],
@@ -552,7 +871,7 @@
           ['🔺', '⭕', '🔺', '⭕', '?']
         ];
         const selectedPat = patternTypes[Math.floor(Math.random() * patternTypes.length)];
-        const correctSymbol = selectedPat[0]; // Next element
+        const correctSymbol = selectedPat[0];
 
         currentQuestionData = {
           type: 'pattern',
@@ -573,7 +892,7 @@
     function generateModule4_UddaJamnaDubbelt() {
       document.getElementById('moduleSubtitle').textContent = 'Modul 4: Udda/Jämna & Dubbelt/Hälften';
 
-      const subType = Math.random() > 0.5 ? 'odd_even' : 'double_half';
+      const subType = currentLevel % 2 !== 0 ? 'odd_even' : 'double_half';
 
       if (subType === 'odd_even') {
         const num = Math.floor(Math.random() * 12) + 1;
@@ -589,10 +908,9 @@
           options: ['Udda', 'Jämnt']
         };
       } else {
-        // Double or Half
         const isDouble = Math.random() > 0.5;
         if (isDouble) {
-          const base = Math.floor(Math.random() * 6) + 1; // 1 to 6
+          const base = Math.floor(Math.random() * 6) + 1;
           const correct = base * 2;
           currentQuestionData = {
             type: 'double',
@@ -603,8 +921,7 @@
             options: generateOptions(correct, 1, 16)
           };
         } else {
-          // Half
-          const evenNum = (Math.floor(Math.random() * 6) + 1) * 2; // 2, 4, 6, 8, 10, 12
+          const evenNum = (Math.floor(Math.random() * 6) + 1) * 2;
           const correct = evenNum / 2;
           currentQuestionData = {
             type: 'half',
@@ -630,7 +947,6 @@
       const data = currentQuestionData;
 
       if (data.type === 'count') {
-        // Render collection of items
         const grid = document.createElement('div');
         grid.className = 'flex flex-wrap justify-center items-center gap-2 max-w-md bg-amber-50/80 p-4 rounded-3xl border-2 border-amber-200 card-shadow';
         for (let i = 0; i < data.targetVal; i++) {
@@ -643,7 +959,6 @@
         container.appendChild(grid);
 
       } else if (data.type === 'compare') {
-        // Compare two number cards
         [data.n1, data.n2].forEach(n => {
           const card = document.createElement('div');
           card.className = 'flex flex-col items-center justify-center bg-white border-4 border-indigo-200 rounded-3xl w-28 h-32 sm:w-36 sm:h-40 shadow-lg text-indigo-950 font-extrabold text-4xl sm:text-5xl card-shadow';
@@ -662,7 +977,6 @@
         });
 
       } else if (data.type === 'missing_addend') {
-        // Part-Part-Whole equation layout
         data.parts.forEach((p, idx) => {
           const isMissing = idx === data.missingIdx;
           const bubble = document.createElement('div');
@@ -693,7 +1007,6 @@
           }
         });
 
-        // Equal Sign & Target Sum
         const eq = document.createElement('span');
         eq.className = 'text-2xl sm:text-3xl font-extrabold text-indigo-500';
         eq.textContent = '=';
@@ -711,14 +1024,12 @@
         container.appendChild(targetCard);
 
       } else if (data.type === 'shape_id') {
-        // Display 2D shape canvas
         const shapeBox = document.createElement('div');
         shapeBox.className = 'flex items-center justify-center bg-indigo-50 border-4 border-indigo-200 rounded-3xl w-36 h-36 sm:w-44 sm:h-44 shadow-inner text-6xl sm:text-7xl';
         shapeBox.innerHTML = `<span class="${data.shape.color} drop-shadow-md">${data.shape.icon}</span>`;
         container.appendChild(shapeBox);
 
       } else if (data.type === 'pattern') {
-        // Display pattern sequence
         const patBox = document.createElement('div');
         patBox.className = 'flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-slate-50 p-4 rounded-3xl border-2 border-slate-200 card-shadow';
         data.pattern.forEach(sym => {
@@ -730,7 +1041,6 @@
         container.appendChild(patBox);
 
       } else if (data.type === 'odd_even') {
-        // Odd or Even pairing visual representation
         const pairBox = document.createElement('div');
         pairBox.className = 'flex flex-col items-center gap-2 bg-purple-50/80 p-4 rounded-3xl border-2 border-purple-200 max-w-md w-full';
         
@@ -798,16 +1108,16 @@
         feedbackText.textContent = chosenPraise;
 
         score += 10;
-        progress += 1;
+        if (currentLevel < maxLevels) {
+          currentLevel += 1;
+        } else {
+          currentLevel = 1;
+        }
         updateProgressUI();
 
         setTimeout(() => {
           feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-0 transform translate-y-2';
-          if (progress >= maxProgress) {
-            triggerModuleComplete();
-          } else {
-            generateQuestion();
-          }
+          generateQuestion();
         }, 1600);
 
       } else {
@@ -826,9 +1136,10 @@
 
     function updateProgressUI() {
       document.getElementById('scoreText').textContent = score;
-      document.getElementById('progressText').textContent = `${progress}/${maxProgress}`;
-      const pct = (progress / maxProgress) * 100;
+      document.getElementById('progressText').textContent = `${currentLevel}/${maxLevels}`;
+      const pct = (currentLevel / maxLevels) * 100;
       document.getElementById('progressBar').style.width = `${pct}%`;
+      renderLevelPills();
     }
 
     function toggleVisualCounters() {
@@ -838,28 +1149,7 @@
       renderInteractiveArea();
     }
 
-    function triggerModuleComplete() {
-      triggerConfetti();
-      triggerConfetti();
-
-      speakSwedishText('Hurra! Du har klarat hela modulen! Fantastiskt!');
-
-      const feedbackBanner = document.getElementById('feedbackBanner');
-      const feedbackText = document.getElementById('feedbackText');
-
-      feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-100 transform translate-y-0';
-      feedbackText.className = 'px-6 py-2 rounded-full bg-yellow-300 text-amber-950 border-2 border-white shadow-lg animate-pulse';
-      feedbackText.textContent = '🏆 MODULEN KLARAD! DU ÄR EN MATTEKUNG! 👑';
-
-      setTimeout(() => {
-        progress = 0;
-        updateProgressUI();
-        feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-0 transform translate-y-2';
-        generateQuestion();
-      }, 3000);
-    }
-
-    // Helper Utility Functions
+    // Helper utilities
     function generateOptions(correct, min, max) {
       let opts = new Set([correct]);
       while (opts.size < 4) {
@@ -880,11 +1170,31 @@
     function triggerConfetti() {
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 50,
-          spread: 70,
+          particleCount: 45,
+          spread: 60,
           origin: { y: 0.6 }
         });
       }
+    }
+
+    function openSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      const card = document.getElementById('settingsModalCard');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      const card = document.getElementById('settingsModalCard');
+      card.classList.remove('scale-100', 'opacity-100');
+      card.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
     }
 
     function openCurriculumModal() {
@@ -907,8 +1217,8 @@
       }, 200);
     }
 
-    // Initialize application on load
     window.onload = function() {
+      initVoices();
       selectModule(1);
     };
   </script>
