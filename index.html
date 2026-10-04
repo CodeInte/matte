@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Matte-Äventyret - Matematik Årskurs 1 (Lgr22)</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Playful Kid Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fredoka: ['Fredoka', 'sans-serif'],
+            quicksand: ['Quicksand', 'sans-serif'],
+          },
+          colors: {
+            sweBlue: '#005293',
+            sweYellow: '#FECC00',
+            pastelPink: '#fde2e4',
+            pastelGreen: '#e2f0cb',
+            pastelPurple: '#e0c3fc',
+            pastelOrange: '#ffd166',
+          },
+          animation: {
+            bounceSlow: 'bounce 2.5s infinite',
+            pulseGlow: 'pulseGlow 1.5s infinite alternate',
+            float: 'float 3s ease-in-out infinite',
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%': { boxShadow: '0 0 10px rgba(254, 204, 0, 0.4)' },
+              '100%': { boxShadow: '0 0 25px rgba(254, 204, 0, 0.9)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .card-shadow {
+      box-shadow: inset -4px -4px 10px rgba(0, 0, 0, 0.06), inset 4px 4px 10px rgba(255, 255, 255, 0.9), 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .num-btn {
+      transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .num-btn:active {
+      transform: scale(0.92) translateY(2px);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-b from-sky-200 via-indigo-100 to-amber-100 min-h-screen flex flex-col justify-between text-slate-800 antialiased overflow-x-hidden">
+
+  <header class="w-full max-w-5xl mx-auto p-3 sm:p-4 flex justify-between items-center z-10">
+    <!-- App Brand -->
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 sm:w-14 sm:h-14 bg-amber-400 rounded-2xl flex items-center justify-center text-indigo-900 text-2xl font-bold shadow-lg border-2 border-white animate-bounceSlow">
+        👑
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-950 leading-none">Matte-Äventyret</h1>
+          <span class="bg-blue-600 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Lgr22</span>
+        </div>
+        <p class="text-xs sm:text-sm font-semibold text-indigo-700">Matematik Årskurs 1 • Sweden</p>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Voice Audio Speech Switch -->
+      <button id="speechToggleBtn" onclick="toggleSpeech()" class="bg-white/90 hover:bg-white text-indigo-800 p-2.5 sm:p-3 rounded-2xl shadow border-2 border-white text-lg transition flex items-center gap-1.5" title="Svenskt Tal">
+        <i id="speechIcon" class="fa-solid fa-volume-high text-green-600"></i>
+        <span class="text-xs font-bold hidden sm:inline text-indigo-900">Svenskt Tal</span>
+      </button>
+
+      <!-- Parent & Lgr22 Curriculum Guide Button -->
+      <button onclick="openCurriculumModal()" class="bg-yellow-400 hover:bg-yellow-300 text-amber-950 font-bold px-3.5 py-2.5 rounded-2xl shadow-md border-2 border-white flex items-center gap-2 transition text-xs sm:text-sm">
+        <i class="fa-solid fa-book-open text-amber-800 text-base"></i>
+        <span class="hidden sm:inline">Lgr22 Föräldraguide</span>
+        <span class="sm:hidden">Guide</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="w-full max-w-5xl mx-auto px-3 sm:px-4 py-2 flex-grow flex flex-col items-center justify-center gap-4">
+
+    <!-- Swedish Math Modules Selector -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full max-w-4xl">
+      <button id="mod1Btn" onclick="selectModule(1)" class="module-btn p-3 rounded-2xl font-extrabold text-xs sm:text-sm transition-all bg-indigo-600 text-white shadow-lg border-2 border-white flex flex-col items-center gap-1">
+        <span>🔢 Modul 1</span>
+        <span class="font-medium text-[11px] opacity-90">Taluppfattning (0-20)</span>
+      </button>
+      <button id="mod2Btn" onclick="selectModule(2)" class="module-btn p-3 rounded-2xl font-extrabold text-xs sm:text-sm transition-all bg-white/80 text-indigo-900 hover:bg-white border-2 border-transparent flex flex-col items-center gap-1">
+        <span>⚖️ Modul 2</span>
+        <span class="font-medium text-[11px] text-slate-500">Likhetstecknet & Obekanta</span>
+      </button>
+      <button id="mod3Btn" onclick="selectModule(3)" class="module-btn p-3 rounded-2xl font-extrabold text-xs sm:text-sm transition-all bg-white/80 text-indigo-900 hover:bg-white border-2 border-transparent flex flex-col items-center gap-1">
+        <span>📐 Modul 3</span>
+        <span class="font-medium text-[11px] text-slate-500">Geometri & Mönster</span>
+      </button>
+      <button id="mod4Btn" onclick="selectModule(4)" class="module-btn p-3 rounded-2xl font-extrabold text-xs sm:text-sm transition-all bg-white/80 text-indigo-900 hover:bg-white border-2 border-transparent flex flex-col items-center gap-1">
+        <span>🍒 Modul 4</span>
+        <span class="font-medium text-[11px] text-slate-500">Udda/Jämna • Dubbelt</span>
+      </button>
+    </div>
+
+    <!-- Progress & Reward Banner -->
+    <div class="w-full max-w-3xl bg-white/85 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-sm border border-white flex justify-between items-center">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span class="text-xs sm:text-sm font-bold text-slate-600">Framsteg / Progress:</span>
+        <div class="w-28 sm:w-44 bg-slate-200 h-3.5 rounded-full overflow-hidden border border-slate-300">
+          <div id="progressBar" class="bg-gradient-to-r from-emerald-400 to-green-500 h-full w-0 transition-all duration-500"></div>
+        </div>
+        <span id="progressText" class="text-xs font-bold text-slate-600">0/5</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1 bg-amber-100 border border-amber-300 px-3 py-1 rounded-xl">
+          <i class="fa-solid fa-star text-amber-500 text-base"></i>
+          <span id="scoreText" class="font-extrabold text-amber-900 text-sm sm:text-base">0</span>
+        </div>
+        <button onclick="readQuestionAudio()" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 p-2 rounded-xl border border-indigo-200 text-sm font-bold transition flex items-center gap-1" title="Läs upp frågan">
+          <i class="fa-solid fa-volume-high"></i>
+          <span class="text-xs hidden sm:inline">Läs upp</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="w-full max-w-3xl bg-white/95 backdrop-blur-md rounded-3xl p-4 sm:p-8 shadow-xl border-4 border-white flex flex-col items-center gap-6 relative overflow-hidden min-h-[380px] justify-between">
+      
+      <!-- Module Question Title & Visual Toggle -->
+      <div class="w-full flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span id="themeEmoji" class="text-2xl">🍓</span>
+          <span id="moduleSubtitle" class="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-wide">
+            Taluppfattning (Number Sense)
+          </span>
+        </div>
+        <button id="counterToggleBtn" onclick="toggleVisualCounters()" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition border border-indigo-200 flex items-center gap-1">
+          <i class="fa-solid fa-eye"></i>
+          <span id="counterBtnText">Visa Räknare / Counters</span>
+        </button>
+      </div>
+
+      <!-- Swedish Question Prompt -->
+      <div class="text-center px-2">
+        <h2 id="questionPrompt" class="text-xl sm:text-2xl font-extrabold text-indigo-950 leading-snug">
+          Laddar fråga...
+        </h2>
+        <p id="questionSubtext" class="text-xs sm:text-sm font-semibold text-slate-500 mt-0.5">
+          Choose the correct answer below
+        </p>
+      </div>
+
+      <!-- Main Interactive Display Container -->
+      <div id="interactiveDisplay" class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 my-auto py-2 w-full min-h-[120px]">
+        <!-- Dynamic Canvas Content injected via JS -->
+      </div>
+
+      <!-- Feedback Banner -->
+      <div id="feedbackBanner" class="h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-0 transform translate-y-2">
+        <span id="feedbackText" class="px-4 py-1 rounded-full">Bra jobbat!</span>
+      </div>
+
+      <!-- Answer Input Buttons / Keypad -->
+      <div class="w-full flex flex-col items-center gap-2">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Välj rätt svar / Select answer:</p>
+        <div id="answerOptions" class="flex flex-wrap justify-center gap-2 sm:gap-3 w-full max-w-lg">
+          <!-- Dynamic Buttons -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div id="curriculumModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border-4 border-yellow-400 overflow-hidden transform transition-all scale-95 opacity-0" id="curriculumModalCard">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-indigo-800 p-5 text-white flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 bg-yellow-400 rounded-2xl flex items-center justify-center text-indigo-950 text-2xl font-bold">
+            👑
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-extrabold">Skolverket Lgr22 Matematik (Åk 1)</h2>
+            <p class="text-xs text-blue-200">Svenska läroplanen för grundskolan • Grade 1 Primary Math Guide</p>
+          </div>
+        </div>
+        <button onclick="closeCurriculumModal()" class="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-6 text-slate-700 font-sans text-sm sm:text-base">
+        
+        <!-- Lgr22 Module Breakdown -->
+        <div class="bg-blue-50 rounded-2xl p-4 border border-blue-200 space-y-3">
+          <h3 class="font-extrabold text-indigo-900 text-base sm:text-lg flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-blue-600"></i> Centralt Innehåll (Årskurs 1-3)
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            In Swedish primary schools (Lgr22), Grade 1 math focuses on intuitive visual understanding, concrete representations, and pattern recognition before abstract formal calculations.
+          </p>
+        </div>
+
+        <!-- 4 Core Curriculum Pillar Summaries -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <h4 class="font-extrabold text-indigo-900 text-sm sm:text-base mb-1 flex items-center gap-2">
+              <span>🔢 1. Taluppfattning (0-20)</span>
+            </h4>
+            <p class="text-xs text-slate-600 leading-normal">
+              Naturliga tal och deras egenskap. Att dela upp tal i delar (Part-Part-Whole), storleksjämförelse ($>$, $<$, $=$), och talens ordning på tallinjen.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <h4 class="font-extrabold text-indigo-900 text-sm sm:text-base mb-1 flex items-center gap-2">
+              <span>⚖️ 2. Likhetstecknet & Obekanta Tal</span>
+            </h4>
+            <p class="text-xs text-slate-600 leading-normal">
+              Likhetstecknets betydelse (vågskålsprincipen: att det ska vara lika mycket på båda sidor, t.ex. $1 + 3 + ? = 6$). Enkla matematiska likheter.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <h4 class="font-extrabold text-indigo-900 text-sm sm:text-base mb-1 flex items-center gap-2">
+              <span>📐 3. Geometri & Mönster</span>
+            </h4>
+            <p class="text-xs text-slate-600 leading-normal">
+              Grundläggande tvådimensionella former: <em>Cirkel, Kvadrat, Rektangel, Triangel</em>. Att känna igen, beskriva och fortsätta regelbundna mönster.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <h4 class="font-extrabold text-indigo-900 text-sm sm:text-base mb-1 flex items-center gap-2">
+              <span>🍒 4. Udda/Jämna & Dubbelt/Hälften</span>
+            </h4>
+            <p class="text-xs text-slate-600 leading-normal">
+              Att paruppdela tal för att se om de är udda eller jämna. Förståelse för begreppen <strong>dubbelt</strong> (t.ex. $3 + 3$) och <strong>hälften</strong>.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Parent Tips section for Swedish Math -->
+        <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 space-y-2">
+          <h4 class="font-extrabold text-amber-900 text-sm sm:text-base flex items-center gap-2">
+            <i class="fa-solid fa-lightbulb text-amber-600"></i> Pedagogen Tipsar: Så hjälper du barnet hemma
+          </h4>
+          <ul class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1">
+            <li><strong>Använd plockmaterial:</strong> Använd kottar, legobitar, blåbär eller makaroner för att visa matematiska problem i vardagen.</li>
+            <li><strong>Tala om likhetstecknet som en gungbräda:</strong> Förklara att $=$ inte betyder "här kommer svaret", utan "det väger lika på båda sidor".</li>
+            <li><strong>Räkna parvis:</strong> När ni sätter på er strumpor eller skor, räkna $2, 4, 6, 8$ för att träna jämna tal och dubbelt!</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="bg-slate-50 p-4 border-t border-slate-200 flex justify-end">
+        <button onclick="closeCurriculumModal()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition">
+          Stäng & Spela! / Close & Play!
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Audio State & Speech Synthesis (Svenskt Tal)
+    let speechEnabled = true;
+    let synth = window.speechSynthesis || null;
+
+    function toggleSpeech() {
+      speechEnabled = !speechEnabled;
+      const speechIcon = document.getElementById('speechIcon');
+      if (speechEnabled) {
+        speechIcon.className = 'fa-solid fa-volume-high text-green-600';
+        speakSwedishText('Svenskt tal aktiverat');
+      } else {
+        speechIcon.className = 'fa-solid fa-volume-xmark text-slate-400';
+        if (synth) synth.cancel();
+      }
+    }
+
+    // Speak text using Swedish voice if available
+    function speakSwedishText(text) {
+      if (!speechEnabled || !synth) return;
+      
+      synth.cancel(); // Stop ongoing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'sv-SE';
+      utterance.rate = 0.88; // Slower pace for young kids
+      utterance.pitch = 1.05;
+
+      // Try finding Swedish voice
+      const voices = synth.getVoices();
+      const svVoice = voices.find(v => v.lang.includes('sv') || v.lang.includes('SE'));
+      if (svVoice) {
+        utterance.voice = svVoice;
+      }
+
+      synth.speak(utterance);
+    }
+
+    // Audio Synthesizer for chimes
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playChime(isCorrect) {
+      if (!speechEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        if (isCorrect) {
+          const notes = [293.66, 369.99, 440.00, 587.33]; // D4, F#4, A4, D5
+          notes.forEach((f, i) => {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.frequency.setValueAtTime(f, now + i * 0.07);
+            g.gain.setValueAtTime(0.2, now + i * 0.07);
+            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.25);
+            osc.connect(g);
+            g.connect(audioCtx.destination);
+            osc.start(now + i * 0.07);
+            osc.stop(now + i * 0.07 + 0.25);
+          });
+        } else {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(140, now + 0.2);
+          g.gain.setValueAtTime(0.2, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.connect(g);
+          g.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        }
+      } catch(e){}
+    }
+
+    // Application State Variables
+    let currentModule = 1;
+    let score = 0;
+    let progress = 0;
+    const maxProgress = 5;
+    let showCounters = true;
+    let currentQuestionData = null;
+
+    // Swedish Swedish Themes (berries, mushrooms, stars, apples)
+    const swedishCounters = [
+      { name: 'Jordgubbar', icon: '🍓' },
+      { name: 'Blåbär', icon: '🫐' },
+      { name: 'Svampar', icon: '🍄' },
+      { name: 'Stjärnor', icon: '⭐' },
+      { name: 'Äpplen', icon: '🍎' },
+      { name: 'Kakor', icon: '🍪' }
+    ];
+    let currentTheme = swedishCounters[0];
+
+    // Module Selection Handler
+    function selectModule(modNum) {
+      currentModule = modNum;
+      progress = 0;
+      updateProgressUI();
+
+      // Style active module tabs
+      [1, 2, 3, 4].forEach(m => {
+        const btn = document.getElementById(`mod${m}Btn`);
+        const sub = btn.querySelector('span:last-child');
+        if (m === modNum) {
+          btn.className = 'module-btn p-3 rounded-2xl font-extrabold text-xs sm:text-sm transition-all bg-indigo-600 text-white shadow-lg border-2 border-white flex flex-col items-center gap-1';
+          if (sub) sub.className = 'font-medium text-[11px] opacity-90 text-white';
+        } else {
+          btn.className = 'module-btn p-3 rounded-2xl font-extrabold text-xs sm:text-sm transition-all bg-white/80 text-indigo-900 hover:bg-white border-2 border-transparent flex flex-col items-center gap-1';
+          if (sub) sub.className = 'font-medium text-[11px] text-slate-500';
+        }
+      });
+
+      generateQuestion();
+    }
+
+    function generateQuestion() {
+      currentTheme = swedishCounters[Math.floor(Math.random() * swedishCounters.length)];
+      document.getElementById('themeEmoji').textContent = currentTheme.icon;
+
+      if (currentModule === 1) {
+        generateModule1_Taluppfattning();
+      } else if (currentModule === 2) {
+        generateModule2_Likhetstecknet();
+      } else if (currentModule === 3) {
+        generateModule3_Geometri();
+      } else if (currentModule === 4) {
+        generateModule4_UddaJamnaDubbelt();
+      }
+
+      renderInteractiveArea();
+      renderOptionsKeypad();
+      readQuestionAudio();
+    }
+
+    // Read question out loud in Swedish
+    function readQuestionAudio() {
+      if (currentQuestionData && currentQuestionData.speechPrompt) {
+        speakSwedishText(currentQuestionData.speechPrompt);
+      }
+    }
+
+    // MODULE 1: Taluppfattning (Number Sense 0-20, counting, comparing)
+    function generateModule1_Taluppfattning() {
+      document.getElementById('moduleSubtitle').textContent = 'Modul 1: Taluppfattning (0-20)';
+      
+      const subType = Math.random() > 0.5 ? 'count' : 'compare';
+
+      if (subType === 'count') {
+        const num = Math.floor(Math.random() * 15) + 3; // 3 to 18
+        currentQuestionData = {
+          type: 'count',
+          prompt: `Hur många ${currentTheme.name.toLowerCase()} ser du?`,
+          speechPrompt: `Hur många ${currentTheme.name.toLowerCase()} ser du?`,
+          targetVal: num,
+          correctAnswer: num,
+          options: generateOptions(num, 1, 20)
+        };
+      } else {
+        // Compare numbers (Vilket tal är störst / minst?)
+        const isBiggest = Math.random() > 0.5;
+        const n1 = Math.floor(Math.random() * 18) + 1;
+        let n2 = Math.floor(Math.random() * 18) + 1;
+        while (n1 === n2) n2 = Math.floor(Math.random() * 18) + 1;
+
+        const correct = isBiggest ? Math.max(n1, n2) : Math.min(n1, n2);
+        const word = isBiggest ? 'störst' : 'minst';
+
+        currentQuestionData = {
+          type: 'compare',
+          prompt: `Vilket tal är ${word}?`,
+          speechPrompt: `Vilket tal är ${word}? ${n1} eller ${n2}?`,
+          n1: n1,
+          n2: n2,
+          correctAnswer: correct,
+          options: [n1, n2]
+        };
+      }
+    }
+
+    // MODULE 2: Likhetstecknets Betydelse & Obekanta Tal (e.g. 1 + 3 + ? = 6)
+    function generateModule2_Likhetstecknet() {
+      document.getElementById('moduleSubtitle').textContent = 'Modul 2: Likhetstecknet & Obekanta Tal';
+
+      const sumTarget = Math.floor(Math.random() * 8) + 5; // Target 5 to 12
+      const partsCount = Math.random() > 0.4 ? 3 : 2;
+
+      let parts = [];
+      let rem = sumTarget;
+
+      for (let i = 0; i < partsCount - 1; i++) {
+        const val = Math.floor(Math.random() * (rem - (partsCount - 1 - i))) + 1;
+        parts.push(val);
+        rem -= val;
+      }
+      parts.push(rem);
+
+      const missingIdx = Math.floor(Math.random() * parts.length);
+      const correctAnswer = parts[missingIdx];
+
+      currentQuestionData = {
+        type: 'missing_addend',
+        prompt: `Vad ska stå istället för frågetecknet?`,
+        speechPrompt: `Vad ska stå istället för frågetecknet så att båda sidor väger lika mycket?`,
+        parts: parts,
+        missingIdx: missingIdx,
+        targetSum: sumTarget,
+        correctAnswer: correctAnswer,
+        options: generateOptions(correctAnswer, 1, 15)
+      };
+    }
+
+    // MODULE 3: Geometri & Mönster (2D Shapes & Pattern Completion)
+    function generateModule3_Geometri() {
+      document.getElementById('moduleSubtitle').textContent = 'Modul 3: Geometri & Mönster';
+
+      const isShape = Math.random() > 0.5;
+
+      if (isShape) {
+        const shapes = [
+          { name: 'Cirkel', icon: '⭕', color: 'text-red-500' },
+          { name: 'Kvadrat', icon: '⬛', color: 'text-blue-600' },
+          { name: 'Triangel', icon: '🔺', color: 'text-amber-500' },
+          { name: 'Rektangel', icon: '█', color: 'text-emerald-600' }
+        ];
+        const chosen = shapes[Math.floor(Math.random() * shapes.length)];
+        
+        currentQuestionData = {
+          type: 'shape_id',
+          prompt: `Vilken geometrisk form är detta?`,
+          speechPrompt: `Vilken geometrisk form är detta?`,
+          shape: chosen,
+          correctAnswer: chosen.name,
+          options: shuffleArray(shapes.map(s => s.name))
+        };
+      } else {
+        // Pattern completion (A-B-A-B or A-B-C-A-B-C)
+        const patternTypes = [
+          ['🔴', '🟦', '🔴', '🟦', '?'],
+          ['⭐', '🌙', '⭐', '🌙', '?'],
+          ['🍎', '🍌', '🍎', '🍌', '?'],
+          ['🔺', '⭕', '🔺', '⭕', '?']
+        ];
+        const selectedPat = patternTypes[Math.floor(Math.random() * patternTypes.length)];
+        const correctSymbol = selectedPat[0]; // Next element
+
+        currentQuestionData = {
+          type: 'pattern',
+          prompt: `Vilket mönster kommer härnäst?`,
+          speechPrompt: `Vilken symbol kommer härnäst i mönstret?`,
+          pattern: selectedPat,
+          correctAnswer: correctSymbol,
+          options: shuffleArray(['🔴', '🟦', '⭐', '🌙', '🍎', '🍌', '🔺', '⭕']).slice(0, 4)
+        };
+        if (!currentQuestionData.options.includes(correctSymbol)) {
+          currentQuestionData.options[0] = correctSymbol;
+          currentQuestionData.options = shuffleArray(currentQuestionData.options);
+        }
+      }
+    }
+
+    // MODULE 4: Udda & Jämna / Dubbelt & Hälften
+    function generateModule4_UddaJamnaDubbelt() {
+      document.getElementById('moduleSubtitle').textContent = 'Modul 4: Udda/Jämna & Dubbelt/Hälften';
+
+      const subType = Math.random() > 0.5 ? 'odd_even' : 'double_half';
+
+      if (subType === 'odd_even') {
+        const num = Math.floor(Math.random() * 12) + 1;
+        const isEven = num % 2 === 0;
+        const correct = isEven ? 'Jämnt' : 'Udda';
+
+        currentQuestionData = {
+          type: 'odd_even',
+          prompt: `Är talet ${num} Udda eller Jämnt?`,
+          speechPrompt: `Är talet ${num} ett udda eller ett jämnt tal?`,
+          targetVal: num,
+          correctAnswer: correct,
+          options: ['Udda', 'Jämnt']
+        };
+      } else {
+        // Double or Half
+        const isDouble = Math.random() > 0.5;
+        if (isDouble) {
+          const base = Math.floor(Math.random() * 6) + 1; // 1 to 6
+          const correct = base * 2;
+          currentQuestionData = {
+            type: 'double',
+            prompt: `Vad är dubbelt så mycket som ${base}?`,
+            speechPrompt: `Vad är dubbelt så mycket som ${base}?`,
+            baseVal: base,
+            correctAnswer: correct,
+            options: generateOptions(correct, 1, 16)
+          };
+        } else {
+          // Half
+          const evenNum = (Math.floor(Math.random() * 6) + 1) * 2; // 2, 4, 6, 8, 10, 12
+          const correct = evenNum / 2;
+          currentQuestionData = {
+            type: 'half',
+            prompt: `Vad är hälften av ${evenNum}?`,
+            speechPrompt: `Vad är hälften av ${evenNum}?`,
+            baseVal: evenNum,
+            correctAnswer: correct,
+            options: generateOptions(correct, 1, 10)
+          };
+        }
+      }
+    }
+
+    function renderInteractiveArea() {
+      const container = document.getElementById('interactiveDisplay');
+      const promptEl = document.getElementById('questionPrompt');
+      const subtextEl = document.getElementById('questionSubtext');
+      
+      container.innerHTML = '';
+      promptEl.textContent = currentQuestionData.prompt;
+      subtextEl.textContent = 'Träna matematik på svenska • Grade 1 Math';
+
+      const data = currentQuestionData;
+
+      if (data.type === 'count') {
+        // Render collection of items
+        const grid = document.createElement('div');
+        grid.className = 'flex flex-wrap justify-center items-center gap-2 max-w-md bg-amber-50/80 p-4 rounded-3xl border-2 border-amber-200 card-shadow';
+        for (let i = 0; i < data.targetVal; i++) {
+          const item = document.createElement('span');
+          item.className = 'text-3xl sm:text-4xl animate-float';
+          item.style.animationDelay = `${(i % 5) * 0.1}s`;
+          item.textContent = currentTheme.icon;
+          grid.appendChild(item);
+        }
+        container.appendChild(grid);
+
+      } else if (data.type === 'compare') {
+        // Compare two number cards
+        [data.n1, data.n2].forEach(n => {
+          const card = document.createElement('div');
+          card.className = 'flex flex-col items-center justify-center bg-white border-4 border-indigo-200 rounded-3xl w-28 h-32 sm:w-36 sm:h-40 shadow-lg text-indigo-950 font-extrabold text-4xl sm:text-5xl card-shadow';
+          
+          let counters = '';
+          if (showCounters) {
+            counters = `<div class="flex flex-wrap justify-center gap-0.5 max-w-[80%] mt-2">`;
+            for (let k = 0; k < n; k++) {
+              counters += `<span class="text-xs">${currentTheme.icon}</span>`;
+            }
+            counters += `</div>`;
+          }
+
+          card.innerHTML = `<span>${n}</span>${counters}`;
+          container.appendChild(card);
+        });
+
+      } else if (data.type === 'missing_addend') {
+        // Part-Part-Whole equation layout
+        data.parts.forEach((p, idx) => {
+          const isMissing = idx === data.missingIdx;
+          const bubble = document.createElement('div');
+          bubble.className = `flex flex-col items-center justify-center rounded-full w-16 h-16 sm:w-24 sm:h-24 border-4 ${
+            isMissing 
+              ? 'bg-amber-100 border-dashed border-amber-400 text-amber-600 animate-pulseGlow' 
+              : 'bg-white border-sky-300 text-slate-800 card-shadow'
+          } p-1`;
+
+          if (isMissing) {
+            bubble.innerHTML = `<span class="text-2xl sm:text-4xl font-extrabold text-amber-500">?</span>`;
+          } else {
+            let counters = '';
+            if (showCounters && p <= 8) {
+              counters = `<div class="flex flex-wrap justify-center gap-0.5 max-w-[85%]">`;
+              for (let k = 0; k < p; k++) counters += `<span class="text-[10px] sm:text-xs">${currentTheme.icon}</span>`;
+              counters += `</div>`;
+            }
+            bubble.innerHTML = `<span class="text-xl sm:text-3xl font-extrabold text-indigo-950">${p}</span>${counters}`;
+          }
+          container.appendChild(bubble);
+
+          if (idx < data.parts.length - 1) {
+            const plus = document.createElement('span');
+            plus.className = 'text-2xl sm:text-3xl font-extrabold text-indigo-400';
+            plus.textContent = '+';
+            container.appendChild(plus);
+          }
+        });
+
+        // Equal Sign & Target Sum
+        const eq = document.createElement('span');
+        eq.className = 'text-2xl sm:text-3xl font-extrabold text-indigo-500';
+        eq.textContent = '=';
+        container.appendChild(eq);
+
+        const targetCard = document.createElement('div');
+        targetCard.className = 'flex flex-col items-center justify-center rounded-2xl w-20 h-20 sm:w-28 sm:h-28 bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-extrabold text-2xl sm:text-4xl shadow-md border-2 border-white p-1';
+        let targetCounters = '';
+        if (showCounters && data.targetSum <= 12) {
+          targetCounters = `<div class="flex flex-wrap justify-center gap-0.5 max-w-[85%]">`;
+          for (let k = 0; k < data.targetSum; k++) targetCounters += `<span class="text-[10px] opacity-80">${currentTheme.icon}</span>`;
+          targetCounters += `</div>`;
+        }
+        targetCard.innerHTML = `<span>${data.targetSum}</span>${targetCounters}`;
+        container.appendChild(targetCard);
+
+      } else if (data.type === 'shape_id') {
+        // Display 2D shape canvas
+        const shapeBox = document.createElement('div');
+        shapeBox.className = 'flex items-center justify-center bg-indigo-50 border-4 border-indigo-200 rounded-3xl w-36 h-36 sm:w-44 sm:h-44 shadow-inner text-6xl sm:text-7xl';
+        shapeBox.innerHTML = `<span class="${data.shape.color} drop-shadow-md">${data.shape.icon}</span>`;
+        container.appendChild(shapeBox);
+
+      } else if (data.type === 'pattern') {
+        // Display pattern sequence
+        const patBox = document.createElement('div');
+        patBox.className = 'flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-slate-50 p-4 rounded-3xl border-2 border-slate-200 card-shadow';
+        data.pattern.forEach(sym => {
+          const item = document.createElement('div');
+          item.className = `w-12 h-12 sm:w-16 sm:h-16 rounded-2xl border-2 ${sym === '?' ? 'bg-amber-100 border-amber-400 text-amber-600 animate-pulse' : 'bg-white border-slate-200'} flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-sm`;
+          item.textContent = sym;
+          patBox.appendChild(item);
+        });
+        container.appendChild(patBox);
+
+      } else if (data.type === 'odd_even') {
+        // Odd or Even pairing visual representation
+        const pairBox = document.createElement('div');
+        pairBox.className = 'flex flex-col items-center gap-2 bg-purple-50/80 p-4 rounded-3xl border-2 border-purple-200 max-w-md w-full';
+        
+        let pairsHTML = '<div class="flex flex-wrap justify-center gap-3">';
+        const total = data.targetVal;
+        const pairsCount = Math.floor(total / 2);
+        const hasRemainder = total % 2 !== 0;
+
+        for (let i = 0; i < pairsCount; i++) {
+          pairsHTML += `<div class="bg-white border border-purple-300 p-2 rounded-xl flex gap-1 shadow-sm"><span class="text-2xl">${currentTheme.icon}</span><span class="text-2xl">${currentTheme.icon}</span></div>`;
+        }
+        if (hasRemainder) {
+          pairsHTML += `<div class="bg-amber-100 border-2 border-dashed border-amber-400 p-2 rounded-xl flex gap-1 shadow-sm"><span class="text-2xl">${currentTheme.icon}</span><span class="text-xs font-bold text-amber-700 flex items-center">Enamling!</span></div>`;
+        }
+        pairsHTML += '</div>';
+
+        pairBox.innerHTML = `<span class="text-3xl font-extrabold text-purple-950">Talet ${total}</span>${showCounters ? pairsHTML : ''}`;
+        container.appendChild(pairBox);
+
+      } else if (data.type === 'double' || data.type === 'half') {
+        const box = document.createElement('div');
+        box.className = 'flex flex-col items-center justify-center bg-amber-50 p-5 rounded-3xl border-2 border-amber-300 card-shadow';
+        let items = '';
+        if (showCounters) {
+          items = `<div class="flex flex-wrap justify-center gap-1 max-w-xs mt-2">`;
+          for (let k = 0; k < data.baseVal; k++) items += `<span class="text-2xl">${currentTheme.icon}</span>`;
+          items += `</div>`;
+        }
+        box.innerHTML = `<span class="text-4xl font-extrabold text-amber-950">${data.baseVal}</span>${items}`;
+        container.appendChild(box);
+      }
+    }
+
+    function renderOptionsKeypad() {
+      const optionsContainer = document.getElementById('answerOptions');
+      optionsContainer.innerHTML = '';
+
+      const options = currentQuestionData.options;
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'num-btn px-5 py-3 sm:px-7 sm:py-3.5 bg-gradient-to-b from-white to-slate-100 hover:from-yellow-200 hover:to-amber-300 text-indigo-950 border-2 border-slate-200 rounded-2xl shadow-md text-lg sm:text-2xl font-extrabold active:scale-95 transition-all flex items-center justify-center min-w-[70px]';
+        btn.textContent = opt;
+        btn.onclick = () => checkUserAnswer(opt);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function checkUserAnswer(selectedVal) {
+      const feedbackBanner = document.getElementById('feedbackBanner');
+      const feedbackText = document.getElementById('feedbackText');
+
+      const isCorrect = String(selectedVal) === String(currentQuestionData.correctAnswer);
+
+      if (isCorrect) {
+        playChime(true);
+        triggerConfetti();
+
+        const praisesSv = ['Rätt svar! Bra jobbat! 🌟', 'Superbra! Du är en stjärna! ⭐', 'Helt rätt! 🚀', 'Snyggt räknat! 🎉'];
+        const chosenPraise = praisesSv[Math.floor(Math.random() * praisesSv.length)];
+        speakSwedishText(chosenPraise);
+
+        feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-100 transform translate-y-0';
+        feedbackText.className = 'px-4 py-1 rounded-full bg-green-100 text-green-800 border border-green-300 shadow-sm';
+        feedbackText.textContent = chosenPraise;
+
+        score += 10;
+        progress += 1;
+        updateProgressUI();
+
+        setTimeout(() => {
+          feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-0 transform translate-y-2';
+          if (progress >= maxProgress) {
+            triggerModuleComplete();
+          } else {
+            generateQuestion();
+          }
+        }, 1600);
+
+      } else {
+        playChime(false);
+        speakSwedishText('Försök igen! Du klarar det!');
+
+        feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-100 transform translate-y-0';
+        feedbackText.className = 'px-4 py-1 rounded-full bg-red-100 text-red-700 border border-red-300 shadow-sm animate-bounce';
+        feedbackText.textContent = 'Inte riktigt rätt, titta noga och försök igen! 💡';
+
+        setTimeout(() => {
+          feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-0 transform translate-y-2';
+        }, 1800);
+      }
+    }
+
+    function updateProgressUI() {
+      document.getElementById('scoreText').textContent = score;
+      document.getElementById('progressText').textContent = `${progress}/${maxProgress}`;
+      const pct = (progress / maxProgress) * 100;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+    }
+
+    function toggleVisualCounters() {
+      showCounters = !showCounters;
+      const btnText = document.getElementById('counterBtnText');
+      btnText.textContent = showCounters ? 'Dölj Räknare / Counters' : 'Visa Räknare / Counters';
+      renderInteractiveArea();
+    }
+
+    function triggerModuleComplete() {
+      triggerConfetti();
+      triggerConfetti();
+
+      speakSwedishText('Hurra! Du har klarat hela modulen! Fantastiskt!');
+
+      const feedbackBanner = document.getElementById('feedbackBanner');
+      const feedbackText = document.getElementById('feedbackText');
+
+      feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-100 transform translate-y-0';
+      feedbackText.className = 'px-6 py-2 rounded-full bg-yellow-300 text-amber-950 border-2 border-white shadow-lg animate-pulse';
+      feedbackText.textContent = '🏆 MODULEN KLARAD! DU ÄR EN MATTEKUNG! 👑';
+
+      setTimeout(() => {
+        progress = 0;
+        updateProgressUI();
+        feedbackBanner.className = 'h-8 flex items-center justify-center font-extrabold text-sm sm:text-base transition-all opacity-0 transform translate-y-2';
+        generateQuestion();
+      }, 3000);
+    }
+
+    // Helper Utility Functions
+    function generateOptions(correct, min, max) {
+      let opts = new Set([correct]);
+      while (opts.size < 4) {
+        let fake = correct + (Math.floor(Math.random() * 5) - 2);
+        if (fake >= min && fake <= max && fake !== correct) {
+          opts.add(fake);
+        } else {
+          opts.add(Math.floor(Math.random() * (max - min + 1)) + min);
+        }
+      }
+      return shuffleArray(Array.from(opts));
+    }
+
+    function shuffleArray(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 50,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    function openCurriculumModal() {
+      const modal = document.getElementById('curriculumModal');
+      const card = document.getElementById('curriculumModalCard');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeCurriculumModal() {
+      const modal = document.getElementById('curriculumModal');
+      const card = document.getElementById('curriculumModalCard');
+      card.classList.remove('scale-100', 'opacity-100');
+      card.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    // Initialize application on load
+    window.onload = function() {
+      selectModule(1);
+    };
+  </script>
+</body>
+</html>
